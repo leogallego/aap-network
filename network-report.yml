@@ -1,0 +1,34 @@
+---
+- name: Gather Network Reports
+  hosts: network_devices
+  gather_facts: false
+  tasks:
+    - name: Network Resource Manager
+      ansible.builtin.include_role:
+        name: network.reports.gather
+      vars:
+        format:
+          - yaml
+          - json
+        resources:
+          - interfaces
+          - l2_interfaces
+          - bgp_global
+
+    - name: Generate Network Report
+      ansible.builtin.include_role:
+        name: network.reports.generate_web_report
+      vars:
+        file_path: "./network_reports"
+
+    - name: Persist Reports to GitHub Repository
+      ansible.builtin.include_role:
+        name: network.reports.persist
+      vars:
+        scm:
+          origin:
+            url: "{{ github_repo_url }}"
+            token: "{{ github_access_token }}"
+            user:
+              name: "{{ git_user_name }}"
+              email: "{{ git_user_email }}"
