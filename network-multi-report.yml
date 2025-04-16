@@ -1,6 +1,6 @@
 ---
 - name: Gather Network Reports
-  hosts: network_devices
+  hosts: network
   gather_facts: false
   tasks:
     - name: Network Resource Manager
